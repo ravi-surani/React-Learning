@@ -16,13 +16,13 @@ function App() {
 
         <BrowserRouter>
           <Routes>
-            {/* <Route path='/' element={<Home />} />
+            <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
-            <Route path='/userlist' element={<UsersList />} /> */}
+            <Route path='/userlist' element={<UsersList />} />
           
-            <Route path='/login' element={<Home />} />
+            {/* <Route path='/login' element={<Home />} />
             <Route path='/login' element={<Login />} />
-            <Route path='/' element={<UsersList />} />
+            <Route path='/' element={<UsersList />} /> */}
           
           </Routes>
         </BrowserRouter>

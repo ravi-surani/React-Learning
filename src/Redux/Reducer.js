@@ -45,6 +45,8 @@ const loginReducer = (store = storeData, action) => {
                     return true
                 }
             })
+            document.cookie = `${JSON.stringify(userFound)}`
+
             return { ...store, ActiveUser: userFound }
 
         }
@@ -53,10 +55,14 @@ const loginReducer = (store = storeData, action) => {
             action.signupDetails.id = store.Users.length + 1
             action.signupDetails.active = true
             store.Users.push(action.signupDetails)
+
+            document.cookie = `${JSON.stringify(action.signupDetails)}`
+
             return { ...store, Users: [...store.Users], ActiveUser: action.signupDetails }
         }
 
         case Logout: {
+            document.cookie = document.cookie+';expires=Mon Jun 05 2022 10:19:48 UTC'
             return { ...store, ActiveUser: false }
         }
         case UpdateUser: {
@@ -87,7 +93,7 @@ const loginReducer = (store = storeData, action) => {
         }
 
         default: {
-            return { ...store }
+            return { ...store, ActiveUser: document.cookie?JSON.parse(document.cookie):false }
         }
     }
 }

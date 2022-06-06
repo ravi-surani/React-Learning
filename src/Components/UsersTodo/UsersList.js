@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import { Navigate } from 'react-router-dom'
 import { updateUserDetails, removeUser, signupAction, activeUser } from '../../Redux/Actions'
+import UserTable from './UserTable'
 function UsersList({ UsersList, ActiveUser, updateUser, removeUser, signupAction, activeUser }) {
 
     const [userDetails, setUserDetails] = useState({})
@@ -59,15 +60,12 @@ function UsersList({ UsersList, ActiveUser, updateUser, removeUser, signupAction
             newlist.sort((a, b) => (a.name < b.name) ? 1 : -1);
         }
 
-
         setUserList([...newlist])
     }
 
-    console.log(userList)
-
     return (
         <div>
-            {/* {!ActiveUser && <Navigate to="/login" />} */}
+            {!ActiveUser && <Navigate to="/login" />}
 
             <div className="card" >
 
@@ -92,7 +90,7 @@ function UsersList({ UsersList, ActiveUser, updateUser, removeUser, signupAction
                     </div>
                 </div>
                 <div className="card-body">
-                    {(userDetails && userDetails.id || showForm) &&
+                    {((userDetails && userDetails.id) || showForm) &&
                         <form onSubmit={(e) => submitform(e)}>
                             <input type='hidden' ref={AddOrEdit} name='AddOrEdit' value={(userDetails && userDetails.id) ? 'edit' : 'add'} />
                             <input type='hidden' value={(userDetails && userDetails.id) ? userDetails.id : ''} readOnly />
@@ -117,35 +115,9 @@ function UsersList({ UsersList, ActiveUser, updateUser, removeUser, signupAction
                         </form>
                     }
 
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Contect Number</th>
-                                <th scope="col">Role</th>
-                                <th scope="col">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {userList.length ? userList.map((user, index) =>
-                                <tr key={index}>
-                                    <th scope="row">{user.id}</th>
-                                    <td style={{ textDecoration: !user.active ? 'line-through' : '' }}>{user.name}</td>
-                                    <td>{user.email}</td>
-                                    <td>{user.number}</td>
-                                    <td>{user.role}</td>
-                                    <td>
-                                        <button className='btn btn-info btn-sm' onClick={() => activeUser(user)}>{user.active ? 'Inactive' : 'Active'}</button>
-                                        <button className='btn btn-primary btn-sm' onClick={() => editUser(user)}>Update</button>
-                                        <button className='btn btn-danger btn-sm' onClick={() => window.confirm('Delete this record') ? removeUser(user) : ''}>Remove</button>
-                                    </td>
-                                </tr>)
-                                : 'No data Found'}
 
-                        </tbody>
-                    </table>
+                    <UserTable activeUser={activeUser} editUser={editUser} removeUser={removeUser} userList={userList} />
+
                 </div>
 
 
