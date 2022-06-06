@@ -36,7 +36,6 @@ function Home({ LogedInUser, OnLogoutAction }) {
 
 
 const stateToProps = (state) => {
-  debugger
   return {
     LogedInUser: state.LogedInUser
   }

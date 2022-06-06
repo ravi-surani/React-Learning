@@ -8,6 +8,7 @@ function UserTableComponent({ FilterUsersList, OnEditUser, OnActiveUser, OnRemov
             <thead>
                 <tr>
                     <th scope="col">#</th>
+                    <th scope="col">id</th>
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
                     <th scope="col">Contect Number</th>
@@ -18,6 +19,7 @@ function UserTableComponent({ FilterUsersList, OnEditUser, OnActiveUser, OnRemov
             <tbody>
                 {FilterUsersList ? FilterUsersList.map((User) =>
                     <tr key={User.id}>
+                        <th >< input type='checkbox' onChange={() => OnActiveUser(User)} {...User.isactive ? 'checked' : ''} /></th>
                         <th scope="row">{User.id}</th>
                         <td style={{ textDecoration: !User.isactive ? 'line-through' : '' }}>{User.name}</td>
                         <td>{User.email}</td>
@@ -25,7 +27,7 @@ function UserTableComponent({ FilterUsersList, OnEditUser, OnActiveUser, OnRemov
                         <td>{User.role}</td>
                         <td>
                             <button className='btn btn-info btn-sm' onClick={() => OnActiveUser(User)}>{User.isactive ? 'Inactive' : 'Active'}</button>
-                            <button className='btn btn-primary btn-sm' onClick={() => OnEditUser(User)}> Update</button>
+                            <button className='btn btn-primary btn-sm' onClick={() => OnEditUser(User)}>Update</button>
                             <button className='btn btn-danger btn-sm' onClick={() => window.confirm('Delete this record') ? OnRemoveUser(User) : null}>Remove</button>
                         </td>
                     </tr>)

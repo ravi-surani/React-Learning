@@ -14,7 +14,6 @@ function UsersListComponent({ UsersList, OnUpdateUser, OnSignupAction, }) {
     const [ActionFilter, SetActionFilter] = useState()
     const [SortFilter, SetSortFilter] = useState()
 
-
     function OnEditUser(user) {
         SetUserDetailsContainer(user)
         SetFormVisible(true)
@@ -53,7 +52,7 @@ function UsersListComponent({ UsersList, OnUpdateUser, OnSignupAction, }) {
         }
 
         SetFilterUsersList([...newlist])
-    }, [SearchFilter, ActionFilter, SortFilter, UsersList])
+    }, [UsersList, SearchFilter, ActionFilter, SortFilter])
 
 
     function OnUserDetailsChange(e) {
