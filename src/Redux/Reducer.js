@@ -1,101 +1,97 @@
 
-import { Login, Logout, Signup, UpdateUser, RemoveUser, ActiveUser } from './Constents'
+import { Login, Logout, Signup, UpdateUser, RemoveUser, ActiveUser, Success, Error } from './Constents'
 const storeData = {
     Users: [
         {
             id: '1',
-            name: 'a',
-            password: 'aa',
-            email: 'aa@mail.com',
+            name: 'abc',
+            password: '00',
+            email: 'abc@mail.com',
             number: '123',
             role: 'admin',
-            active: true,
+            isactive: true,
         },
         {
             id: '2',
-            name: 'b',
-            password: 'bb',
-            email: 'bb@mail.com',
-            number: '123',
+            name: 'bdef',
+            password: '00',
+            email: 'def@mail.com',
+            number: '456',
             role: 'seller',
-            active: true,
+            isactive: true,
         },
         {
             id: '3',
-            name: 'c',
-            password: 'cc',
-            email: 'cc@mail.com',
-            number: '123',
+            name: 'mno',
+            password: '00',
+            email: 'mno@mail.com',
+            number: '789',
             role: 'user',
-            active: true,
+            isactive: true,
         },
 
     ]
 
 }
-const loginReducer = (store = storeData, action) => {
+const UserReducer = (store = storeData, action) => {
     switch (action.type) {
         case Login: {
-            let userFound = false
+            let UserFound = false
             store.Users.every(user => {
-                if (user.email === action.loginDetails.email && user.password === action.loginDetails.password) {
-                    userFound = user
+                if (user.email === action.LoginDetails.email && user.password === action.LoginDetails.password) {
+                    UserFound = user
                     return false
                 } else {
                     return true
                 }
             })
-            document.cookie = `${JSON.stringify(userFound)}`
+            document.cookie = `${JSON.stringify(UserFound)}`
 
-            return { ...store, ActiveUser: userFound }
+            let Result = UserFound ? { Success: true, ...UserFound } : { Success: false, Error: 'User Not Found.' }
 
+            return { ...store, LogedInUser: Result }
         }
         case Signup: {
-            action.signupDetails.role = 'user'
-            action.signupDetails.id = store.Users.length + 1
-            action.signupDetails.active = true
-            store.Users.push(action.signupDetails)
+            action.SignupDetails.role = 'user'
+            action.SignupDetails.id = store.Users.length + 1
+            action.SignupDetails.isactive = true
+            store.Users.push(action.SignupDetails)
+            document.cookie = `${JSON.stringify(action.SignupDetails)}`
 
-            document.cookie = `${JSON.stringify(action.signupDetails)}`
+            return { ...store, LogedInUser: { Success: true, ...action.SignupDetails } }
 
-            return { ...store, Users: [...store.Users], ActiveUser: action.signupDetails }
         }
-
         case Logout: {
-            document.cookie = document.cookie+';expires=Mon Jun 05 2022 10:19:48 UTC'
-            return { ...store, ActiveUser: false }
+            document.cookie = document.cookie + ';expires=Mon Jun 05 2022 10:19:48 UTC'
+            return { ...store, LogedInUser: false, }
         }
         case UpdateUser: {
             store.Users.forEach((user) => {
-                if (user.id === action.updateDetails.id) {
-                    user.name = action.updateDetails.name
-                    user.email = action.updateDetails.email
-                    user.number = action.updateDetails.number
+                if (user.id === action.UpdateDetails.id) {
+                    user.name = action.UpdateDetails.name
+                    user.email = action.UpdateDetails.email
+                    user.number = action.UpdateDetails.number
                 }
             })
             return { ...store, Users: [...store.Users], }
         }
         case RemoveUser: {
-            let newarr = store.Users.filter((user) => user.id != action.removeDetails.id)
-            store.Users.filter((user) => user.id != action.removeDetails.id)
-
-            return { ...store, Users: newarr }
+            let FilteredArray = store.Users.filter((user) => user.id !== action.RemoveDetails.id)
+            return { ...store, Users: FilteredArray }
         }
-
         case ActiveUser: {
             store.Users.forEach((user) => {
-                if (user.id === action.ActiveUser.id) {
-                    user.active = !user.active
+                if (user.id === action.ActiveUserDetails.id) {
+                    user.isactive = !user.isactive
                 }
             })
-
             return { ...store, Users: [...store.Users], }
         }
 
         default: {
-            return { ...store, ActiveUser: document.cookie?JSON.parse(document.cookie):false }
+            return { ...store, LogedInUser: document.cookie ? JSON.parse(document.cookie) : false }
         }
     }
 }
 
-export { loginReducer } 
+export { UserReducer } 

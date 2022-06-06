@@ -6,11 +6,11 @@ import reportWebVitals from './reportWebVitals';
 
 import { Provider, } from 'react-redux'
 import { createStore } from 'redux'
-import { loginReducer } from './Redux/Reducer'
+import { UserReducer } from './Redux/Reducer'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-const store = createStore(loginReducer)
+const store = createStore(UserReducer)
 
 root.render(
   <React.StrictMode>

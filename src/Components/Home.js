@@ -1,27 +1,31 @@
-import React from 'react'
-import { Navigate, Link, } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { connect } from 'react-redux';
-import { logoutAction } from '../Redux/Actions'
+import { LogoutAction } from '../Redux/Actions'
 
-function Home({ ActiveUser, logoutAction }) {
+function Home({ LogedInUser, OnLogoutAction }) {
 
-  
+  let navigate = useNavigate();
+
+  useEffect(() => {
+    if (!LogedInUser) {
+      navigate("/login");
+    }
+  }, [LogedInUser])
+
   return (
     <div>
-
-
-      {!ActiveUser && <Navigate to="/login" />}
       <div className="card" >
 
         <div className="card-header">
-          <label>Wecome {ActiveUser.name}</label>
-          <button type="button" className="btn btn-outline-danger" onClick={() => logoutAction()}>Logout</button>
+          <label>Wecome {LogedInUser.name}</label>
+          <button type="button" className="btn btn-outline-danger" onClick={() => OnLogoutAction()}>Logout</button>
         </div>
         <div className="card-body">
           <ul className="list-group list-group-horizontal">
-            {ActiveUser.role === 'admin' && <li className="list-group-item" ><Link to='/userlist'> Manage Users</Link></li>}
-            {(ActiveUser.role === 'admin' || ActiveUser.role === 'seller') && <li className="list-group-item">Manage Stores</li>}
-            {(ActiveUser.role === 'admin' || ActiveUser.role === 'seller' || ActiveUser.role === 'user') && <li className="list-group-item">Manage Detils</li>}
+            {LogedInUser.role === 'admin' && <li className="list-group-item" ><Link to='/userlist'> Manage Users</Link></li>}
+            {(LogedInUser.role === 'admin' || LogedInUser.role === 'seller') && <li className="list-group-item">Manage Stores</li>}
+            {(LogedInUser.role === 'admin' || LogedInUser.role === 'seller' || LogedInUser.role === 'user') && <li className="list-group-item">Manage Detils</li>}
           </ul>
         </div>
 
@@ -31,17 +35,16 @@ function Home({ ActiveUser, logoutAction }) {
 }
 
 
-const stateToProps = (props) => {
+const stateToProps = (state) => {
+  debugger
   return {
-    ActiveUser: props.ActiveUser ?? false
+    LogedInUser: state.LogedInUser
   }
 }
 const dispatchToprops = (dispatch) => {
   return {
-    logoutAction: () => dispatch(logoutAction())
+    OnLogoutAction: () => dispatch(LogoutAction())
   }
 }
-
-
 
 export default connect(stateToProps, dispatchToprops)(Home)

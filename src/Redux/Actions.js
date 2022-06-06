@@ -1,36 +1,40 @@
 import { Login, Logout, Signup, UpdateUser, RemoveUser, ActiveUser } from './Constents'
-const loginAction = (details) => {
+
+const LoginAction = (details) => {
     return {
         type: Login,
-        loginDetails: details,
+        LoginDetails: details,
     }
 }
-const signupAction = (details) => {
+const SignupAction = (details) => {
     return {
         type: Signup,
-        signupDetails: details,
+        SignupDetails: details,
     }
 }
-const logoutAction = () => {
+const LogoutAction = () => {
     return {
         type: Logout,
     }
 }
-const updateUserDetails = (details) => {
+const UpdateUserAction = (details) => {
     return {
-        type: UpdateUser, updateDetails: details
+        type: UpdateUser,
+        UpdateDetails: details
     }
 }
-const removeUser = (details) => {
+const RemoveUserAction = (details) => {
     return {
-        type: RemoveUser, removeDetails: details
-    }
-}
-
-const activeUser = (details) => {
-    return {
-        type: ActiveUser, ActiveUser: details
+        type: RemoveUser,
+        RemoveDetails: details
     }
 }
 
-export { loginAction, signupAction, logoutAction, updateUserDetails, removeUser, activeUser, }
+const ActiveUserAction = (details) => {
+    return {
+        type: ActiveUser,
+        ActiveUserDetails: details
+    }
+}
+
+export { LoginAction, SignupAction, LogoutAction, UpdateUserAction, RemoveUserAction, ActiveUserAction, }
