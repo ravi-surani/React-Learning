@@ -13,11 +13,9 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-
-
-
         <BrowserRouter>
           <Routes>
+
             <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
             <Route path='/userlist' element={<UsersListComponent />} />
@@ -35,3 +33,4 @@ function App() {
 }
 
 export default App;
+    

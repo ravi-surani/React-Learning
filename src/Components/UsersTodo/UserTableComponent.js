@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { RemoveUserAction, ActiveUserAction } from '../../Redux/Actions'
-function UserTableComponent({ FilterUsersList, OnEditUser, OnActiveUser, OnRemoveUser }) {
+function UserTableComponent({ FilterUsersList, OnEditUser, OnActiveChange, OnRemoveUser }) {
 
     return (
         <table className="table">
@@ -19,14 +19,14 @@ function UserTableComponent({ FilterUsersList, OnEditUser, OnActiveUser, OnRemov
             <tbody>
                 {FilterUsersList ? FilterUsersList.map((User) =>
                     <tr key={User.id}>
-                        <th >< input type='checkbox' onChange={() => OnActiveUser(User)} {...User.isactive ? 'checked' : ''} /></th>
+                        <th ><input type='checkbox' onChange={() => OnActiveChange(User)} {...User.isactive ?? 'checked'} /></th>
                         <th scope="row">{User.id}</th>
                         <td style={{ textDecoration: !User.isactive ? 'line-through' : '' }}>{User.name}</td>
                         <td>{User.email}</td>
                         <td>{User.number}</td>
                         <td>{User.role}</td>
                         <td>
-                            <button className='btn btn-info btn-sm' onClick={() => OnActiveUser(User)}>{User.isactive ? 'Inactive' : 'Active'}</button>
+                            <button className='btn btn-info btn-sm' onClick={() => OnActiveChange(User)}>{User.isactive ? 'Inactive' : 'Active'}</button>
                             <button className='btn btn-primary btn-sm' onClick={() => OnEditUser(User)}>Update</button>
                             <button className='btn btn-danger btn-sm' onClick={() => window.confirm('Delete this record') ? OnRemoveUser(User) : null}>Remove</button>
                         </td>
@@ -40,7 +40,7 @@ function UserTableComponent({ FilterUsersList, OnEditUser, OnActiveUser, OnRemov
 
 const dispatchToprops = (dispatch) => {
     return {
-        OnActiveUser: (details) => dispatch(ActiveUserAction(details)),
+        OnActiveChange: (details) => dispatch(ActiveUserAction(details)),
         OnRemoveUser: (details) => dispatch(RemoveUserAction(details)),
     }
 }
