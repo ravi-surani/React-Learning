@@ -3,15 +3,17 @@ import { Link, useNavigate } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { LogoutAction } from '../Redux/Actions'
 
+
 function Home({ LogedInUser, OnLogoutAction }) {
 
+  
   let navigate = useNavigate();
 
   useEffect(() => {
     if (!LogedInUser) {
       navigate("/login");
     }
-  }, [LogedInUser])
+  }, [LogedInUser,navigate])
 
   return (
     <div>
@@ -36,6 +38,7 @@ function Home({ LogedInUser, OnLogoutAction }) {
 
 
 const stateToProps = (state) => {
+
   return {
     LogedInUser: state.LogedInUser
   }

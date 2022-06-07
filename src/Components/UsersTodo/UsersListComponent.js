@@ -2,17 +2,23 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { UpdateUserAction, SignupAction } from '../../Redux/Actions'
 import UserTableComponent from './UserTableComponent'
+import { useNavigate } from 'react-router-dom'
+import { SEARCH, ACTION, SORT } from '../../Redux/Constents'
 
-import { Search, Action, Sort } from '../../Redux/Constents'
-
-function UsersListComponent({ UsersList, OnUpdateUser, OnSignupAction, }) {
+function UsersListComponent({ UsersList, OnUpdateUser, OnSignupAction, LogedInUser }) {
 
     const [UserDetailsContainer, SetUserDetailsContainer] = useState({})
     const [FormVisible, SetFormVisible] = useState(false)
-    const [FilterUsersList, SetFilterUsersList] = useState()
-    const [SearchFilter, SetSearchFilter] = useState()
-    const [ActionFilter, SetActionFilter] = useState()
-    const [SortFilter, SetSortFilter] = useState()
+    const [FilteredUsersList, SetFilteredUsersList] = useState()
+    const [FiltersContainer, SetFiltersContainer] = useState({ SortFilter: SORT.AZ })
+
+
+    let navigate = useNavigate();
+    useEffect(() => {
+        if (!LogedInUser) {
+            navigate("/login");
+        }
+    }, [LogedInUser, navigate])
 
     function OnEditUser(user) {
         SetUserDetailsContainer(user)
@@ -32,57 +38,60 @@ function UsersListComponent({ UsersList, OnUpdateUser, OnSignupAction, }) {
     }
 
     useEffect(() => {
-        let newlist = UsersList
+        let NewList = UsersList
 
-        if (SearchFilter) {
-            newlist = newlist.filter((user) => user.name.includes(SearchFilter))
+        if (FiltersContainer.SearchedText) {
+            NewList = NewList.filter((user) => user.name.includes(FiltersContainer.SearchedText))
         }
-        if (ActionFilter === Action.Active) {
-            newlist = newlist.filter((user) => user.isactive)
+        if (FiltersContainer.ActionFilter === ACTION.ACTIVE) {
+            NewList = NewList.filter((user) => user.isactive)
         }
-        else if (ActionFilter === Action.Inactive) {
-            newlist = newlist.filter((user) => !user.isactive)
-        }
-
-        if (SortFilter === Sort.AZ) {
-            newlist.sort((a, b) => (a.name > b.name) ? 1 : -1);
-        }
-        else if (SortFilter === Sort.ZA) {
-            newlist.sort((a, b) => (a.name < b.name) ? 1 : -1);
+        else if (FiltersContainer.ActionFilter === ACTION.INACTIVE) {
+            NewList = NewList.filter((user) => !user.isactive)
         }
 
-        SetFilterUsersList([...newlist])
-    }, [UsersList, SearchFilter, ActionFilter, SortFilter])
-
+        if (FiltersContainer.SortFilter === SORT.AZ) {
+            NewList.sort((a, b) => (a.name > b.name) ? 1 : -1);
+        }
+        else if (FiltersContainer.SortFilter === SORT.ZA) {
+            NewList.sort((a, b) => (a.name < b.name) ? 1 : -1);
+        }
+        SetFilteredUsersList([...NewList])
+    }, [UsersList, FiltersContainer])
 
     function OnUserDetailsChange(e) {
         SetUserDetailsContainer({ ...UserDetailsContainer, [e.target.name]: e.target.value })
     }
 
+    function OnFilterChange(e) {
+        SetFiltersContainer({ ...FiltersContainer, [e.target.name]: e.target.value })
+    }
+
+    function OnHideForm() {
+        SetFormVisible(false)
+        SetUserDetailsContainer(null)
+    }
 
     return (
         <div>
-            {/* {!ActiveUser && <Navigate to="/login" />} */}
-
             <div className="card" >
-
                 <div className="card-header card">
                     <label>User List</label>
                     <div className='row'>
                         <div className='col-md-4'>
-                            <input className='form-control form-control-sm' placeholder={Search} value={SearchFilter} onChange={(e) => SetSearchFilter(e.target.value)} />
+                            <input className='form-control form-control-sm' placeholder={SEARCH} value={FiltersContainer.SearchedText} name='SearchedText' onChange={OnFilterChange} />
                         </div>
                         <div className='col-md-3'>
-                            <select className="form-select form-select-sm" value={ActionFilter} onChange={(e) => SetActionFilter(e.target.value)} >
-                                <option value={Action.All} >{Action.All}</option>
-                                <option value={Action.Active}>{Action.Active}</option>
-                                <option value={Action.Inactive}>{Action.Inactive}</option>
+                            <select className="form-select form-select-sm" value={FiltersContainer.ActionFilter} name='ActionFilter' onChange={OnFilterChange} >
+                                <option value={ACTION.ALL} >{ACTION.ALL}</option>
+                                <option value={ACTION.ACTIVE}>{ACTION.ACTIVE}</option>
+                                <option value={ACTION.INACTIVE}>{ACTION.INACTIVE}</option>
                             </select>
                         </div>
                         <div className='col-md-3'>
-                            <select className="form-select form-select-sm" value={SortFilter} onChange={(e) => SetSortFilter(e.target.value)} >
-                                <option value={Sort.AZ} >Name {Sort.AZ}</option>
-                                <option value={Sort.ZA}>Name {Sort.ZA}</option>
+                            <select className="form-select form-select-sm" value={FiltersContainer.SortFilter} name='SortFilter' onChange={OnFilterChange} >
+                                <option value={SORT.AZ} >Name {SORT.AZ}</option>
+                                <option value={SORT.ZA}>Name {SORT.ZA}</option>
                             </select>
                         </div>
                         <div className='col-md-2 btn btn-info btn-sm' onClick={() => SetFormVisible(!FormVisible)}>Add</div>
@@ -93,48 +102,41 @@ function UsersListComponent({ UsersList, OnUpdateUser, OnSignupAction, }) {
                         <form onSubmit={(e) => submitform(e)}>
                             <div className='row'>
                                 <div className='col-md-3'>
-                                    <input type='text' placeholder='Name' name='name' className='form-control' value={UserDetailsContainer.name} onChange={(e) => OnUserDetailsChange(e)} required />
+                                    <input type='text' placeholder='Name' name='name' className='form-control' value={UserDetailsContainer.name || ''} onChange={OnUserDetailsChange} />
                                 </div>
                                 <div className='col-md-3'>
-                                    <input type='email' placeholder='Email' name='email' className='form-control' value={UserDetailsContainer.email} onChange={(e) => OnUserDetailsChange(e)} required />
+                                    <input type='email' placeholder='Email' name='email' className='form-control' value={UserDetailsContainer.email || ''} onChange={OnUserDetailsChange} />
                                 </div>
                                 <div className='col-md-3'>
-                                    <input type='number' placeholder='Number' name='number' className='form-control' value={UserDetailsContainer.number} onChange={(e) => OnUserDetailsChange(e)} required />
+                                    <input type='number' placeholder='Number' name='number' className='form-control' value={UserDetailsContainer.number || ''} onChange={OnUserDetailsChange} />
                                 </div>
                                 <div className='col-md-3'>
-                                    <input type='text' placeholder='Role' name='role' className='form-control' value={UserDetailsContainer.role} onChange={(e) => OnUserDetailsChange(e)} required />
+                                    <input type='text' placeholder='Role' name='role' className='form-control' value={UserDetailsContainer.role || ''} onChange={OnUserDetailsChange} />
                                 </div>
                             </div>
                             <div>
                                 <button type='submit' className='btn btn-primary btn-sm'>Save</button>
-                                <button className='btn btn-danger btn-sm' onClick={() => SetFormVisible(false)}>Calcle</button>
+                                <button className='btn btn-danger btn-sm' onClick={OnHideForm}>Calcle</button>
                             </div>
                         </form>
                     }
-
-
-
-                    <UserTableComponent OnEditUser={OnEditUser} FilterUsersList={FilterUsersList} />
-
+                    <UserTableComponent OnEditUser={OnEditUser} FilteredUsersList={FilteredUsersList} />
                 </div>
-
-
             </div>
-        </div >
+        </div>
     )
 }
-const stateToProps = (state) => {
-
+const StateToProps = (state) => {
     return {
-        ActiveUser: state.ActiveUser ?? false,
+        LogedInUser: state.LogedInUser,
         UsersList: state.Users,
     }
 }
 
-const dispatchToprops = (dispatch) => {
+const DispatchToprops = (dispatch) => {
     return {
         OnSignupAction: (details) => dispatch(SignupAction(details)),
         OnUpdateUser: (details) => dispatch(UpdateUserAction(details)),
     }
 }
-export default connect(stateToProps, dispatchToprops)(UsersListComponent)
+export default connect(StateToProps, DispatchToprops)(UsersListComponent)

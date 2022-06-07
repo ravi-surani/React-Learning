@@ -1,38 +1,38 @@
-import { Login, Logout, Signup, UpdateUser, RemoveUser, ActiveUser } from './Constents'
+import { LOGON, SIGNUP, LOGOUT, UPDATEUSER, REMOVEUSER, ACTIVEUSER, } from './Constents'
 
 const LoginAction = (details) => {
     return {
-        type: Login,
+        type: LOGON,
         LoginDetails: details,
     }
 }
 const SignupAction = (details) => {
     return {
-        type: Signup,
+        type: SIGNUP,
         SignupDetails: details,
     }
 }
 const LogoutAction = () => {
     return {
-        type: Logout,
+        type: LOGOUT,
     }
 }
 const UpdateUserAction = (details) => {
     return {
-        type: UpdateUser,
+        type: UPDATEUSER,
         UpdateDetails: details
     }
 }
 const RemoveUserAction = (details) => {
     return {
-        type: RemoveUser,
+        type: REMOVEUSER,
         RemoveDetails: details
     }
 }
 
 const ActiveUserAction = (details) => {
     return {
-        type: ActiveUser,
+        type: ACTIVEUSER,
         ActiveUserDetails: details
     }
 }

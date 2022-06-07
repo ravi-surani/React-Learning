@@ -1,5 +1,13 @@
 
-import { Login, Logout, Signup, UpdateUser, RemoveUser, ActiveUser, Success, Error } from './Constents'
+import {
+    LOGON,
+    SIGNUP,
+    LOGOUT,
+    UPDATEUSER,
+    REMOVEUSER,
+    ACTIVEUSER,
+
+} from './Constents'
 const storeData = {
     Users: [
         {
@@ -35,7 +43,7 @@ const storeData = {
 }
 const UserReducer = (store = storeData, action) => {
     switch (action.type) {
-        case Login: {
+        case LOGON: {
             let UserFound = false
             store.Users.every(user => {
                 if (user.email === action.LoginDetails.email && user.password === action.LoginDetails.password) {
@@ -51,7 +59,7 @@ const UserReducer = (store = storeData, action) => {
 
             return { ...store, LogedInUser: Result }
         }
-        case Signup: {
+        case SIGNUP: {
             action.SignupDetails.role = 'user'
             action.SignupDetails.id = store.Users.length + 1
             action.SignupDetails.isactive = true
@@ -61,11 +69,11 @@ const UserReducer = (store = storeData, action) => {
             return { ...store, LogedInUser: { Success: true, ...action.SignupDetails } }
 
         }
-        case Logout: {
+        case LOGOUT: {
             document.cookie = document.cookie + ';expires=Mon Jun 05 2022 10:19:48 UTC'
             return { ...store, LogedInUser: false, }
         }
-        case UpdateUser: {
+        case UPDATEUSER: {
             store.Users.forEach((user) => {
                 if (user.id === action.UpdateDetails.id) {
                     user.name = action.UpdateDetails.name
@@ -75,11 +83,11 @@ const UserReducer = (store = storeData, action) => {
             })
             return { ...store, Users: [...store.Users], }
         }
-        case RemoveUser: {
+        case REMOVEUSER: {
             let FilteredArray = store.Users.filter((user) => user.id !== action.RemoveDetails.id)
             return { ...store, Users: FilteredArray }
         }
-        case ActiveUser: {
+        case ACTIVEUSER: {
             store.Users.forEach((user) => {
                 if (user.id === action.ActiveUserDetails.id) {
                     user.isactive = !user.isactive

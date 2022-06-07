@@ -3,22 +3,22 @@ import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom'
 import { LoginAction, SignupAction } from '../Redux/Actions'
 
-function Login({ loginStatus, OnLoginAction, OnSignupAction }) {
+function Login({ LogedInUser, OnLoginAction, OnSignupAction }) {
 
-  const [loginForm, setLoginForm] = useState(true)
+  const [LoginForm, SetLoginForm] = useState(true)
   const [UserDetails, SetUserDetails] = useState({})
 
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (loginStatus.Success) {
+    if (LogedInUser.Success) {
       navigate("/");
     }
-  }, [loginStatus])
+  }, [LogedInUser, navigate])
 
   function submitForm(event) {
     event.preventDefault();
-    if (loginForm) {
+    if (LoginForm) {
       OnLoginAction(UserDetails)
     }
     else {
@@ -33,50 +33,49 @@ function Login({ loginStatus, OnLoginAction, OnSignupAction }) {
 
 
   return (
+
+    
     < div className="card" >
-
       <div className="card-header">
-        <label onClick={() => setLoginForm(true)}>Login/</label>
-        <label onClick={() => setLoginForm(false)}>Signup</label>
+        <label onClick={() => SetLoginForm(true)}>Login/</label>
+        <label onClick={() => SetLoginForm(false)}>Signup</label>
       </div>
-
-      {!loginStatus.Success && loginStatus.Error}
-
+      {LogedInUser.Error}
       <div className="card-body">
         <form onSubmit={(e) => submitForm(e)}>
-          {!loginForm &&
+          {!LoginForm &&
             <>
               <div className="mb-3">
                 <label className="form-label">Name</label>
-                <input type="text" className="form-control" name='name' id="name" value={UserDetails.name} onChange={(e) => OnDetailsChange(e)} />
+                <input type="text" className="form-control" name='name' id="name" value={UserDetails.name} onChange={OnDetailsChange} />
               </div>
               <div className="mb-3">
                 <label className="form-label">Contect Number</label>
-                <input type="number" className="form-control" name='number' id="number" value={UserDetails.number} onChange={(e) => OnDetailsChange(e)} />
+                <input type="number" className="form-control" name='number' id="number" value={UserDetails.number} onChange={OnDetailsChange} />
               </div>
             </>
           }
           <div className="mb-3">
             <label className="form-label">Email address</label>
-            <input type="email" className="form-control" name='email' id="email" value={UserDetails.email} onChange={(e) => OnDetailsChange(e)} />
+            <input type="email" className="form-control" name='email' id="email" value={UserDetails.email} onChange={OnDetailsChange} />
           </div>
           <div className="mb-3">
             <label className="form-label">Password</label>
-            <input type="password" className="form-control" name='password' value={UserDetails.password} onChange={(e) => OnDetailsChange(e)} />
+            <input type="password" className="form-control" name='password' value={UserDetails.password} onChange={OnDetailsChange} />
           </div>
-          <button type="submit" className="btn btn-primary">{loginForm ? 'Login' : 'Signup'}</button>
+          <button type="submit" className="btn btn-primary">{LoginForm ? 'Login' : 'Signup'}</button>
         </form>
       </div>
     </div >
   )
 }
 
-
 const stateToProps = (props) => {
   return {
-    loginStatus: props.LogedInUser,
+    LogedInUser: props.LogedInUser,
   }
 }
+
 const dispatchToprops = (dispatch) => {
   return {
     OnSignupAction: (details) => dispatch(SignupAction(details)),
